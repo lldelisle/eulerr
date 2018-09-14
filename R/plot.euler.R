@@ -367,8 +367,16 @@ plot.euler <- function(x,
                            quantities,
                            n,
                            id)
+    absentCombinations<-NULL
+    if(do_quantities){
+      absentCombinations<-names(x$original.values)[x$original.values>0&!names(x$original.values)%in%names(data$quantities$label)]
+    }
+    if(length(absentCombinations)>0){
+      message("Warning: some combinations are not empty but will not be plotted:",paste(absentCombinations,collapse=","))
+    }
   }
 
+  
   groups <- strips$groups
 
   # start setting up grobs
@@ -598,11 +606,6 @@ plot.euler <- function(x,
                                    children = strip_left_grob_children,
                                    vp = strip_left_vp)
   }
-    
-  absentCombinations<-names(x$original.values)[x$original.values>0&x$fitted.values==0]
-  if(length(absentCombinations)>0){
-    message("Warning: some combinations are not empty but will not be plotted:",paste(absentCombinations,collapse=","))
-  }
 
   # return a gTree object
   grid::grobTree(
@@ -731,7 +734,7 @@ setup_geometry <- function(x,
         center_labels <- c(center_labels, labels$labels[i])
       droprows[which(pick)[1L]] <- FALSE
     }
-
+    
     if (do_quantities) {
       quantities_centers <-
         centers[!is.nan(centers[, 1L]) & !singles & droprows, , drop = FALSE]
