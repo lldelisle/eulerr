@@ -369,7 +369,11 @@ plot.euler <- function(x,
                            id)
     absentCombinations<-NULL
     if(do_quantities){
-      absentCombinations<-names(x$original.values)[x$original.values>0&!names(x$original.values)%in%names(data$quantities$label)]
+      namesToCheck<-names(x$original.values)
+      if(!is.null(quantities$label)){
+        namesToCheck<-names(quantities$label)
+      }
+      absentCombinations<-namesToCheck[x$original.values>0&!namesToCheck%in%names(data$quantities$label)]
     }
     if(length(absentCombinations)>0){
       message("Warning: some combinations are not empty but will not be plotted:",paste(absentCombinations,collapse=","))
